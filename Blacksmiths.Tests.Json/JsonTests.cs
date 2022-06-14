@@ -64,6 +64,17 @@ namespace Blacksmiths.Tests.Json
             Assert.AreEqual(123.45M, customer?.CreditLimit);
         }
 
+        [TestMethod]
+        public void DeserialiseBusiness()
+        {
+            var json = "{ \"customer\": { \"name\": \"Test Name\", \"type\": \"Customer\", \"creditLimit\": 123.45 } }";
+            var business = Deserialize<Business>(json);
+
+            Assert.AreEqual("Blacksmiths.Tests.Json.Models.Customer", business?.Customer?.GetType().ToString());
+            //var customer = person as Customer;
+            //Assert.AreEqual(123.45M, customer?.CreditLimit);
+        }
+
         private static string Serialize<T>(T value) => JsonSerializer.Serialize(value, GetOptions());
         private static T? Deserialize<T>(string json) => JsonSerializer.Deserialize<T>(json, GetOptions());
 

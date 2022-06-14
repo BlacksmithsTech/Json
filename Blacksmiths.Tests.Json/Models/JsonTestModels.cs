@@ -31,4 +31,10 @@ namespace Blacksmiths.Tests.Json.Models
     {
         public string? OfficeNumber { get; set; }
     }
+
+    public class Business
+    {
+        public Person? Customer { get; set; }
+        public Person? Employee { get; set; }
+    }
 }

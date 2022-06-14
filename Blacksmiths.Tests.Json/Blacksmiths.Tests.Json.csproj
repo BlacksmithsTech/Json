@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Blacksmiths.Text.Json.NJsonSchema\Blacksmiths.Text.Json.NJsonSchema.csproj" />
     <ProjectReference Include="..\Blacksmiths.Text.Json\Blacksmiths.Text.Json.csproj" />
   </ItemGroup>
 
