@@ -15,11 +15,6 @@ namespace Blacksmiths.Text.Json.Serialization
     public class InheritanceConverter<T> : JsonConverter<T>
     {
         /// <summary>
-        /// Gets the current <see cref="JsonNamingPolicy"/>
-        /// </summary>
-        protected JsonNamingPolicy NamingPolicy { get; }
-
-        /// <summary>
         /// Gets the discriminator <see cref="PropertyInfo"/> of the base type to convert
         /// </summary>
         protected PropertyInfo DiscriminatorProperty { get; }
@@ -29,10 +24,8 @@ namespace Blacksmiths.Text.Json.Serialization
         /// </summary>
         protected Dictionary<object, Type> TypeMappings { get; }
 
-        public InheritanceConverter(JsonNamingPolicy namingPolicy)
+        public InheritanceConverter()
         {
-            this.NamingPolicy = namingPolicy;
-
             var typeofT = typeof(T);
             var discriminatorProperties = typeofT.GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(p => p.GetCustomAttributes<DiscriminatorAttribute>().Any()).ToArray();
             if (discriminatorProperties.Length > 1)
@@ -53,7 +46,7 @@ namespace Blacksmiths.Text.Json.Serialization
                 throw new JsonException("Start object token type expected");
             using (JsonDocument jsonDocument = JsonDocument.ParseValue(ref reader))
             {
-                string discriminatorPropertyName = this.NamingPolicy?.ConvertName(this.DiscriminatorProperty.Name);
+                string discriminatorPropertyName = options.PropertyNamingPolicy?.ConvertName(this.DiscriminatorProperty.Name);
                 var typeofDiscriminator = Nullable.GetUnderlyingType(this.DiscriminatorProperty.PropertyType) ?? this.DiscriminatorProperty.PropertyType;
                 object discriminatorValue = null;
                 jsonDocument.RootElement.TryGetProperty(discriminatorPropertyName, out JsonElement discriminatorProperty);

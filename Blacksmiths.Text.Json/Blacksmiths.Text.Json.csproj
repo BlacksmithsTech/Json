@@ -2,6 +2,14 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+	  <Authors>Blacksmiths Technology Ltd,Alexander Ali</Authors>
+	  <Company>Blacksmiths Technology Ltd</Company>
+	  <Product>Blacksmiths Reporting</Product>
+	  <Copyright>(C) 2022 Blacksmiths Technology Ltd</Copyright>
+	  <RepositoryUrl>https://github.com/BlacksmithsTech/Json</RepositoryUrl>
+	  <Description>System.Text.Json utilities</Description>
+	  <VersionPrefix>1.0.0</VersionPrefix>
+	  <GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

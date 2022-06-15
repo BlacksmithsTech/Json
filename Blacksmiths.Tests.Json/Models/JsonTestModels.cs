@@ -13,8 +13,8 @@ namespace Blacksmiths.Tests.Json.Models
         Employee,
     }
 
-    [DiscriminatorTypeMapping(PersonType.Customer, typeof(Customer))]
-    [DiscriminatorTypeMapping(PersonType.Employee, typeof(Employee))]
+    [DiscriminatorTypeMapping(PersonType.Customer, typeof(DTO_Customer))]
+    [DiscriminatorTypeMapping(PersonType.Employee, typeof(DTO_Employee))]
     public class Person
     {
         [Discriminator]
@@ -22,12 +22,12 @@ namespace Blacksmiths.Tests.Json.Models
         public string? Name { get; set; }
     }
 
-    public class Customer : Person
+    public class DTO_Customer : Person
     {
         public decimal CreditLimit { get; set; }
     }
 
-    public class Employee : Person
+    public class DTO_Employee : Person
     {
         public string? OfficeNumber { get; set; }
     }

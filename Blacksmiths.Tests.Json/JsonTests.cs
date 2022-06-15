@@ -49,7 +49,7 @@ namespace Blacksmiths.Tests.Json
         {
             var person = Deserialize<Person>(json);
             Assert.AreEqual("Blacksmiths.Tests.Json.Models.Employee", person?.GetType().ToString());
-            var employee = person as Employee;
+            var employee = person as DTO_Employee;
             Assert.AreEqual("B4", employee?.OfficeNumber);
         }
 
@@ -60,7 +60,7 @@ namespace Blacksmiths.Tests.Json
             var person = Deserialize<Person>(json);
 
             Assert.AreEqual("Blacksmiths.Tests.Json.Models.Customer", person?.GetType().ToString());
-            var customer = person as Customer;
+            var customer = person as DTO_Customer;
             Assert.AreEqual(123.45M, customer?.CreditLimit);
         }
 

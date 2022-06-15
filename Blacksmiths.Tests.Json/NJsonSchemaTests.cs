@@ -13,9 +13,9 @@ namespace Blacksmiths.Tests.Json
     public class NJsonSchemaTests
     {
         [TestMethod]
-        public void Test()
+        public void ManualTest()
         {
-            var schema = JsonSchema.FromType<Person>(GetSettings());
+            var schema = JsonSchema.FromType<Business>(GetSettings());
             var json = schema.ToJson();
 
             Assert.IsNotNull(json);

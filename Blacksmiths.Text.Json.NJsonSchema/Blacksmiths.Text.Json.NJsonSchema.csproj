@@ -1,15 +1,23 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<Authors>Blacksmiths Technology Ltd,Alexander Ali</Authors>
+		<Company>Blacksmiths Technology Ltd</Company>
+		<Product>Blacksmiths Reporting</Product>
+		<Copyright>(C) 2022 Blacksmiths Technology Ltd</Copyright>
+		<RepositoryUrl>https://github.com/BlacksmithsTech/Json</RepositoryUrl>
+		<Description>NJsonSchema utilities</Description>
+		<VersionPrefix>1.0.0</VersionPrefix>
+		<GenerateDocumentationFile>True</GenerateDocumentationFile>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="NJsonSchema" Version="10.7.2" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="NJsonSchema" Version="10.7.2" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Blacksmiths.Text.Json\Blacksmiths.Text.Json.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Blacksmiths.Text.Json\Blacksmiths.Text.Json.csproj" />
+	</ItemGroup>
 
 </Project>
