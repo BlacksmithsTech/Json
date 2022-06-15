@@ -47,7 +47,7 @@ namespace Blacksmiths.Text.Json.Serialization
                 }
 
                 if(null == discriminatorValue)
-                    throw new ArgumentNullException($"A discriminator key was not provided within an instance of type '{typeof(T)}'");
+                    throw new JsonException($"A discriminator key was not provided within an instance of type '{typeof(T)}'");
 
                 if (typeofDiscriminator.IsEnum)
                 {
@@ -68,7 +68,12 @@ namespace Blacksmiths.Text.Json.Serialization
                     throw new JsonException($"Failed to find the derived type with the specified discriminator key '{discriminatorValue}'");
 
                 string json = jsonDocument.RootElement.GetRawText();
-                return (T)JsonSerializer.Deserialize(json, derivedType, options);
+                var result = (T)JsonSerializer.Deserialize(json, derivedType, options);
+
+                var validationResults = new List<System.ComponentModel.DataAnnotations.ValidationResult>();
+                if (!System.ComponentModel.DataAnnotations.Validator.TryValidateObject(result, new System.ComponentModel.DataAnnotations.ValidationContext(result), validationResults, true))
+                    throw new JsonException(string.Join(", ", validationResults.Select(r => r.ErrorMessage)));
+                return result;
             }
         }
 

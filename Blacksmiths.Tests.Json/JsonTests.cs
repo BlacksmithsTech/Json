@@ -14,7 +14,7 @@ namespace Blacksmiths.Tests.Json
         {
             var json = "{ \"name\": \"Test Name\"}";
 
-            Assert.ThrowsException<ArgumentNullException>(() =>
+            Assert.ThrowsException<JsonException>(() =>
             {
                 var person = Deserialize<Person>(json);
             });
@@ -73,6 +73,17 @@ namespace Blacksmiths.Tests.Json
             Assert.AreEqual("Blacksmiths.Tests.Json.Models.DTO_Customer", business?.Customer?.GetType().ToString());
             //var customer = person as Customer;
             //Assert.AreEqual(123.45M, customer?.CreditLimit);
+        }
+
+        [TestMethod]
+        public void DeserialiseBusinessBadCustomer()
+        {
+            var json = "{ \"customer\": { \"name\": \"Test Name\", \"type\": \"Customer\" } }";
+            
+            Assert.ThrowsException<JsonException>(() =>
+            {
+                var business = Deserialize<Business>(json);
+            });
         }
 
         private static string Serialize<T>(T value) => JsonSerializer.Serialize(value, GetOptions());

@@ -24,7 +24,8 @@ namespace Blacksmiths.Tests.Json.Models
 
     public class DTO_Customer : Person
     {
-        public decimal CreditLimit { get; set; }
+        [System.ComponentModel.DataAnnotations.Required]
+        public decimal? CreditLimit { get; set; }
     }
 
     public class DTO_Employee : Person
