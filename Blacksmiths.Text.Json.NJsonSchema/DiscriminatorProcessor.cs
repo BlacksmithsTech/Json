@@ -13,8 +13,43 @@ namespace Blacksmiths.Text.Json.NJsonSchema
     {
         public void Process(SchemaProcessorContext context)
         {
+            this.ProcessDiscriminator(context);
+            this.ProcessOneOf(context);
+        }
+
+        private void ProcessOneOf(SchemaProcessorContext context)
+        {
+            if (context.Schema.Properties.Count > 0)
+            {
+                foreach (var property in context.ContextualType.Properties)
+                {
+                    var matchedProperties = context.Schema.Properties.Where(p => p.Key.Equals(property.Name, StringComparison.CurrentCultureIgnoreCase));
+                    if (1 == matchedProperties.Count())
+                    {
+                        var propertySchema = matchedProperties.First().Value;
+
+                        var typeMappings = property.PropertyType.GetAttributes<DiscriminatorTypeMappingAttribute>();
+                        if (typeMappings.Any())
+                        {
+                            propertySchema.OneOf.Remove(propertySchema.OneOf.Last());//remove the base class
+
+                            foreach (var typeMapping in typeMappings)
+                            {
+                                propertySchema.OneOf.Add(new JsonSchema { Reference = context.Resolver.GetSchema(typeMapping.ChildType, false) });
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Finds classes which wish to use a discriminator and applies it to the schema
+        /// </summary>
+        private void ProcessDiscriminator(SchemaProcessorContext context)
+        {
             var discriminatorDetails = new DiscriminatorDetails(context.ContextualType.Type);
-            if(null != discriminatorDetails.DiscriminatorProperty)
+            if (null != discriminatorDetails.DiscriminatorProperty)
             {
                 if (context.Schema.Properties.Keys.Contains(discriminatorDetails.DiscriminatorProperty.Name, StringComparer.CurrentCultureIgnoreCase))
                 {
@@ -24,7 +59,7 @@ namespace Blacksmiths.Text.Json.NJsonSchema
                     var discriminator = new OpenApiDiscriminator();
                     context.Schema.DiscriminatorObject = discriminator;
                     context.Schema.DiscriminatorObject.PropertyName = propertyName;
-                    
+
                     foreach (var mappedKvp in discriminatorDetails.TypeMappings)
                         if (!context.Resolver.HasSchema(mappedKvp.Value, false))
                         {

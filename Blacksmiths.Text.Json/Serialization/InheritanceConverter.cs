@@ -14,40 +14,24 @@ namespace Blacksmiths.Text.Json.Serialization
     /// <typeparam name="T">The type of the base class</typeparam>
     public class InheritanceConverter<T> : JsonConverter<T>
     {
-        /// <summary>
-        /// Gets the discriminator <see cref="PropertyInfo"/> of the base type to convert
-        /// </summary>
-        protected PropertyInfo DiscriminatorProperty { get; }
-
-        /// <summary>
-        /// Mapping of discriminator keys to types
-        /// </summary>
-        protected Dictionary<object, Type> TypeMappings { get; }
+        protected DiscriminatorDetails DiscriminatorDetails { get; }
 
         public InheritanceConverter()
         {
-            var typeofT = typeof(T);
-            var discriminatorProperties = typeofT.GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(p => p.GetCustomAttributes<DiscriminatorAttribute>().Any()).ToArray();
-            if (discriminatorProperties.Length > 1)
-                throw new InvalidOperationException($"Multiple discriminators were specified against type '{typeofT}'. Only one property should be specified as a discriminator");
-
-            if(discriminatorProperties.Length == 1)
-            {
-                this.DiscriminatorProperty = discriminatorProperties[0];
-                this.TypeMappings = typeofT.GetCustomAttributes<DiscriminatorTypeMappingAttribute>().ToDictionary(dtma => dtma.Key, dtma => dtma.ChildType);
-                if (this.TypeMappings.Any(kvp => kvp.Value.Equals(typeofT)))
-                    throw new JsonException("The target of a discriminator type mapping may not be the base class as this will cause a recursion in deserialization");
-            }
+            this.DiscriminatorDetails = new DiscriminatorDetails(typeof(T));
         }
 
         public override T Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
+            if (null == this.DiscriminatorDetails.DiscriminatorProperty)
+                throw new ArgumentNullException($"An inheritance converter is running against type '{typeof(T)}' which doesn't declare a property with DiscriminatorAttribute");
+
             if (reader.TokenType != JsonTokenType.StartObject)
                 throw new JsonException("Start object token type expected");
             using (JsonDocument jsonDocument = JsonDocument.ParseValue(ref reader))
             {
-                string discriminatorPropertyName = options.PropertyNamingPolicy?.ConvertName(this.DiscriminatorProperty.Name);
-                var typeofDiscriminator = Nullable.GetUnderlyingType(this.DiscriminatorProperty.PropertyType) ?? this.DiscriminatorProperty.PropertyType;
+                string discriminatorPropertyName = options.PropertyNamingPolicy?.ConvertName(this.DiscriminatorDetails.DiscriminatorProperty.Name);
+                var typeofDiscriminator = Nullable.GetUnderlyingType(this.DiscriminatorDetails.DiscriminatorProperty.PropertyType) ?? this.DiscriminatorDetails.DiscriminatorProperty.PropertyType;
                 object discriminatorValue = null;
                 jsonDocument.RootElement.TryGetProperty(discriminatorPropertyName, out JsonElement discriminatorProperty);
 
@@ -80,7 +64,7 @@ namespace Blacksmiths.Text.Json.Serialization
                     }
                 }
 
-                if (!this.TypeMappings.TryGetValue(discriminatorValue, out Type derivedType))
+                if (!this.DiscriminatorDetails.TypeMappings.TryGetValue(discriminatorValue, out Type derivedType))
                     throw new JsonException($"Failed to find the derived type with the specified discriminator key '{discriminatorValue}'");
 
                 string json = jsonDocument.RootElement.GetRawText();

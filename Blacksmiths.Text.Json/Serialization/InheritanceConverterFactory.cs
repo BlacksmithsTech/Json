@@ -24,7 +24,7 @@ namespace Blacksmiths.Text.Json.Serialization
             if (!Converters.TryGetValue(typeToConvert, out JsonConverter converter))
             {
                 Type converterType = typeof(InheritanceConverter<>).MakeGenericType(typeToConvert);
-                converter = (JsonConverter)Activator.CreateInstance(converterType, options.PropertyNamingPolicy);
+                converter = (JsonConverter)Activator.CreateInstance(converterType);
                 Converters.Add(typeToConvert, converter);
             }
             return converter;

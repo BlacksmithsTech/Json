@@ -48,7 +48,7 @@ namespace Blacksmiths.Tests.Json
         private void DeserialiseEmployee(string json)
         {
             var person = Deserialize<Person>(json);
-            Assert.AreEqual("Blacksmiths.Tests.Json.Models.Employee", person?.GetType().ToString());
+            Assert.AreEqual("Blacksmiths.Tests.Json.Models.DTO_Employee", person?.GetType().ToString());
             var employee = person as DTO_Employee;
             Assert.AreEqual("B4", employee?.OfficeNumber);
         }
@@ -59,7 +59,7 @@ namespace Blacksmiths.Tests.Json
             var json = "{ \"name\": \"Test Name\", \"type\": \"Customer\", \"creditLimit\": 123.45 }";
             var person = Deserialize<Person>(json);
 
-            Assert.AreEqual("Blacksmiths.Tests.Json.Models.Customer", person?.GetType().ToString());
+            Assert.AreEqual("Blacksmiths.Tests.Json.Models.DTO_Customer", person?.GetType().ToString());
             var customer = person as DTO_Customer;
             Assert.AreEqual(123.45M, customer?.CreditLimit);
         }
@@ -70,7 +70,7 @@ namespace Blacksmiths.Tests.Json
             var json = "{ \"customer\": { \"name\": \"Test Name\", \"type\": \"Customer\", \"creditLimit\": 123.45 } }";
             var business = Deserialize<Business>(json);
 
-            Assert.AreEqual("Blacksmiths.Tests.Json.Models.Customer", business?.Customer?.GetType().ToString());
+            Assert.AreEqual("Blacksmiths.Tests.Json.Models.DTO_Customer", business?.Customer?.GetType().ToString());
             //var customer = person as Customer;
             //Assert.AreEqual(123.45M, customer?.CreditLimit);
         }
