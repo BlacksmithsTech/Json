@@ -26,6 +26,9 @@ namespace Blacksmiths.Text.Json.Serialization
             if (null == type)
                 throw new ArgumentNullException(nameof(type));
 
+            if (type.IsArray)
+                type = type.GetElementType();
+
             this.Type = type;
 
             var discriminatorProperties = this.Type.GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(p => p.GetCustomAttributes<DiscriminatorAttribute>().Any()).ToArray();

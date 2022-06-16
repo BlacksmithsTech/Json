@@ -37,5 +37,6 @@ namespace Blacksmiths.Tests.Json.Models
     {
         public Person? Customer { get; set; }
         public Person? Employee { get; set; }
+        public Person[] People { get; set; }
     }
 }

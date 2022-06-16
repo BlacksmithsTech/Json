@@ -47,7 +47,7 @@ namespace Blacksmiths.Text.Json.Serialization
                 }
 
                 if(null == discriminatorValue)
-                    throw new JsonException($"A discriminator key was not provided within an instance of type '{typeof(T)}'");
+                    throw new JsonException($"A discriminator key in property '{discriminatorPropertyName}' was not provided within an instance of type '{typeof(T).Name}'");
 
                 if (typeofDiscriminator.IsEnum)
                 {

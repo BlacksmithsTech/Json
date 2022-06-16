@@ -27,15 +27,33 @@ namespace Blacksmiths.Text.Json.NJsonSchema
                     if (1 == matchedProperties.Count())
                     {
                         var propertySchema = matchedProperties.First().Value;
+                        var propertyType = property.PropertyType.ElementType ?? property.PropertyType;
 
-                        var typeMappings = property.PropertyType.GetAttributes<DiscriminatorTypeMappingAttribute>();
+                        var typeMappings = propertyType.GetAttributes<DiscriminatorTypeMappingAttribute>();
                         if (typeMappings.Any())
                         {
-                            propertySchema.OneOf.Remove(propertySchema.OneOf.Last());//remove the base class
-
-                            foreach (var typeMapping in typeMappings)
+                            if (null != property.PropertyType.ElementType)
                             {
-                                propertySchema.OneOf.Add(new JsonSchema { Reference = context.Resolver.GetSchema(typeMapping.ChildType, false) });
+                                // ** Array.
+                                propertySchema.Item = null;
+
+                                var subSchema = new JsonSchema();
+                                foreach (var typeMapping in typeMappings)
+                                {
+                                    subSchema.OneOf.Add(new JsonSchema { Reference = context.Resolver.GetSchema(typeMapping.ChildType, false) });
+                                }
+
+                                propertySchema.Item = subSchema;
+                            }
+                            else
+                            {
+                                // ** Object
+                                propertySchema.OneOf.Remove(propertySchema.OneOf.Last());//remove the base class
+
+                                foreach (var typeMapping in typeMappings)
+                                {
+                                    propertySchema.OneOf.Add(new JsonSchema { Reference = context.Resolver.GetSchema(typeMapping.ChildType, false) });
+                                }
                             }
                         }
                     }
